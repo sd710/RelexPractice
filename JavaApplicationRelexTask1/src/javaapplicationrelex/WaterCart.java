@@ -11,66 +11,43 @@
 package javaapplicationrelex;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class WaterCart {
     //список клумб и дата последнего полива соответсвющей клумбы
-    ArrayList<WaterFlowerbedTimer> waterFlowerbedsTimer = new ArrayList<>();
-
-    public WaterCart(ArrayList<Flowerbed> LFlowerbeds) {
-        LFlowerbeds.stream().forEach((fl) -> {
-            waterFlowerbedsTimer.add(new WaterFlowerbedTimer(fl.getNameFlowerbed(), null));
-        });
+    ArrayList<Sensor> listBedsSensors;
+    
+    
+    public WaterCart(ArrayList<Flowerbed> flowerbeds) {
+        listBedsSensors = new ArrayList<>();
+        for(Flowerbed flowerbed : flowerbeds){
+            listBedsSensors.add(new Sensor(flowerbed.getNameFlowerbed()));
+        }
     }
     
-    public boolean checkFlowerbed(Flowerbed flowers){
-        for (WaterFlowerbedTimer flowerbed : waterFlowerbedsTimer){
-            if (flowerbed.nameFlowerbed.equalsIgnoreCase(flowers.getNameFlowerbed())){
-                System.out.printf("Температура клумбы %s: %s \n", flowers.getNameFlowerbed(), flowers.getPrintFormatTemperature());
-                if (flowers.checkTemperature()){
-                    //System.out.println("Температура больше 30 C, Если поливали больше чем 4 часа назад или не поливали вообще, то надо полить");
-                    if (flowerbed.dateWaterFlowerbed != null){
-                        Date currentDate = new Date();
-                        Calendar currentCalendar = Calendar.getInstance();
-                        currentCalendar.setTime(currentDate);
-                        currentCalendar.add(Calendar.HOUR, -4);
-                        //currentCalendar.add(Calendar.SECOND, -3);
-                        Calendar lastWatering = Calendar.getInstance();
-                        lastWatering.setTime(flowerbed.dateWaterFlowerbed);
-                        if (currentCalendar.after(lastWatering))
-                            return false;
-                        else
-                            System.out.printf("Время последнего полива %s Поливать рано!!!\n", flowerbed.dateWaterFlowerbed.toString());
-                    } else{
-                        return false;
-                    }
-                }
-                return true;
-            }
+    public void checkFlorebed(){
+        for (Sensor flowerbed: listBedsSensors){
+            flowerbed.changeTemperature();
+            if (flowerbed.GetHumiditySensor(new Date()))
+                goToFlowerbed(flowerbed);
+            else
+                System.out.printf("Клумбу %s не нужно поливать, температура: %s\n", flowerbed.getNameFlowerbed(), flowerbed.getPrintTemperature());
         }
-        return true;
     }
+    
     /* перемещение к заданной клумбе */
-    public void goToFlowerbed(Flowerbed flowers){      
+    public void goToFlowerbed(Sensor flowers){   
         System.out.printf("Я еду к клумбе %s... Дорога займёт 5 мин...\n", flowers.getNameFlowerbed());
+        waterFlowers(flowers);
     }
     
     /* полив заданной клумбы */
-    public void waterFlowers(Flowerbed flowers){
+    public void waterFlowers(Sensor flowers){
         System.out.println("Я на месте");
 
         System.out.printf("Я поливаю клумбу %s... Это займёт 10 мин...\n", flowers.getNameFlowerbed());
-        for (WaterFlowerbedTimer flowerbed : waterFlowerbedsTimer){
-            if (flowerbed.nameFlowerbed.equalsIgnoreCase(flowers.getNameFlowerbed())){
-                Date date = new Date();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                flowerbed.dateWaterFlowerbed = date;
-                endWaterFlowers();
-                return;
-            }
-        }
+        flowers.setLastWateringDate(new Date());
+        endWaterFlowers();
     }
     
     /* окончание полива */

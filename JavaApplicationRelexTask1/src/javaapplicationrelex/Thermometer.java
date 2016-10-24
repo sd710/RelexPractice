@@ -9,6 +9,10 @@ package javaapplicationrelex;
 public class Thermometer {
     private double temperature; 
     
+    public Thermometer(double temperature){
+        this.temperature = temperature;
+    }
+    
     public void setTemperature(double tempData){
         temperature = tempData;                
     }

@@ -9,11 +9,9 @@ package javaapplicationrelex;
 */
 public class Flowerbed {
     private String nameFlowerbed;
-    private Thermometer temperature;
 
     public Flowerbed(String nameFlowerbed) {
         this.nameFlowerbed = nameFlowerbed;
-        this.temperature = new Thermometer();
     } 
     
     public void setNameFlowerbed(String name){
@@ -22,25 +20,5 @@ public class Flowerbed {
     
     public String getNameFlowerbed(){
         return nameFlowerbed;
-    }
-    
-    public void setTemperature(Thermometer temp){
-        temperature = temp;
-    }
-    
-    public double getTemperature(){
-        return temperature.getTemperature();
-    }
-    
-    public String getPrintFormatTemperature(){
-        return temperature.getPrintTemperature();
-    }
-    
-    public boolean checkTemperature(){
-        return temperature.getTemperature() > 30;
-    }
-    
-    public void changeTemperature(){
-        temperature.changeTemperature();
     }
 }
